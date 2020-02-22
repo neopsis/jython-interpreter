@@ -1,0 +1,653 @@
+<html>
+<head>
+    <meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type">
+    <title>Jython Interpreter plugin user's guide</title>
+    <meta content="DocBook XSL Stylesheets V1.75.1" name="generator">
+    <link href="#id36107104" rel="home" title="Jython Interpreter plugin user's guide">
+    <link href="#intro" rel="next" title="General Information">
+</head>
+<body alink="#0000FF" bgcolor="white" link="#0000FF" text="black" vlink="#840084">
+<div class="book" title="Jython Interpreter plugin user's guide">
+    <div class="titlepage">
+        <div>
+            <div><h1 class="title"><a name="id36107104"></a>Jython Interpreter plugin user's guide</h1></div>
+            <div>
+                <div class="authorgroup">
+                    <div class="author"><h3 class="author"><span class="firstname">Carlos</span> <span class="surname">Quiroz</span>
+                    </h3></div>
+                    <div class="author"><h3 class="author"><span class="firstname">Ollie</span> <span class="surname">Rutherfurd</span>
+                    </h3></div>
+					<div class="author"><h3 class="author"><span class="firstname">Roland</span> <span class="surname">Walter</span>
+					</h3></div>
+					<div class="author"><h3 class="author"><span class="firstname">Robert</span> <span class="surname">Carnecky</span>
+					</h3></div>
+				</div>
+            </div>
+            <div>
+                <div class="legalnotice" title="Legal Notice"><a name="id36107135"></a>
+                    <p class="legalnotice-title"><b>Legal Notice</b></p>
+                    <p>
+                        Permission is granted to copy, distribute and/or modify this document
+                        under the terms of the GNU Free Documentation License, Version 1.1 or
+                        any later version published by the Free Software Foundation; with no
+                        "Invariant Sections", "Front-Cover Texts" or
+                        "Back-Cover Texts", each as defined in the license. A copy of
+                        the license can be found in the file <code class="filename">COPYING.DOC.txt</code>
+                        included with jEdit.
+                    </p></div>
+            </div>
+        </div>
+        <hr>
+    </div>
+    <div class="toc"><p><b>Table of Contents</b></p>
+        <ul>
+            <li><span class="chapter"><a href="#intro">1. General Information</a></span></li>
+            <li><span class="chapter"><a href="#toolbar">2. JythonInterpreter toolbar</a></span></li>
+            <li><span class="chapter"><a href="#extras">3. Some extras</a></span></li>
+            <li><span class="chapter"><a href="#sidekick">4. SideKick parser</a></span></li>
+            <li><span class="chapter"><a href="#options">5. Options</a></span></li>
+            <li><span class="chapter"><a href="#macros">6. Macros</a></span></li>
+            <li><span class="chapter"><a href="#plugins">7. Plugins</a></span></li>
+            <li><span class="chapter"><a href="#credits">8. Credits</a></span></li>
+            <li><span class="appendix"><a href="#todo">A. ToDo</a></span></li>
+            <li><span class="appendix"><a href="#changes">B. Change log</a></span></li>
+        </ul>
+    </div>
+    <div class="chapter" title="General Information">
+        <div class="titlepage">
+            <div>
+                <div><h2 class="title"><a name="intro"></a>Chapter 1. General Information</h2></div>
+            </div>
+        </div>
+        <p>
+            This plugin embeds a Jython Interpreter (<a class="ulink" href="http://www.jython.org"
+                                                        target="_top">Jython</a>
+            is an implementation of Python integrated with Java) into jEdit. It
+            allows the user to run Jython commands as usual, and integrates with jEdit
+            by easily running and importing the current buffer. Jython can also be used to customize
+            jEdit in the same way as BeanShell does, with macros and plugins now being possible
+            to be written in Jython. As a primary example most of the plugin itself is built in
+            such a fashion.
+        </p>
+        <p>
+            The interpreter can be opened by selecting
+            <span class="guimenu"><strong>Plugins</strong></span>
+            &gt;
+            <span class="guisubmenu"><strong>Jython Interpreter</strong></span>.
+            The interpreter window can be set to dock into the view in
+            <span class="guimenu"><strong>Utilities</strong></span>
+            &gt;
+            <span class="guimenu"><strong>Global Options</strong></span>
+            &gt;
+            <span class="guimenu"><strong>Docking</strong></span>.
+            The interpreter is not loaded until runtime, this reduces the memory requirements until
+            the interpreter is really needed. This behavior can be modified by selecting Load
+            interpreter at startup in the options window. Also if any plugin or macro is run it will
+            load the interpreter in case it is not already running.
+            You also have the <span class="guisubmenu"><strong>About</strong></span> for JythonInterpreter and the
+            <span class="guisubmenu"><strong>Check jython version...</strong></span>
+            which will verify if you have the correct jython version in your classpath.
+        </p>
+        <p>
+            The interpreter window has a text area for entering commands and as output area. On top
+            there is a toolbar for fast access to commands.
+        </p>
+        <p>
+            The text area behaves much like the original Jython Interpreter. Previously entered
+            strings can be recalled with the
+            <span class="guimenu"><strong>CTRL+UP</strong></span>
+            and
+            <span class="guimenu"><strong>CTRL+DOWN</strong></span>
+            keys. This can be optionally set to UP/DOWN in the Options dialog box
+        </p>
+        <p>
+            The interpreter is based on Jython 2.7 and tested on Sun's JDK 1.8, jEdit 5.5.0, MacOS.
+			The API of Jython changed in 2.7, so you cannot use older versions.
+        </p></div>
+    <div class="chapter" title="JythonInterpreter toolbar">
+        <div class="titlepage">
+            <div>
+                <div><h2 class="title"><a name="toolbar"></a>Chapter 2. JythonInterpreter toolbar</h2></div>
+            </div>
+        </div>
+        <p>
+            Since version 0.6 JythonInterpreter features a toolbar which make easy to execute several
+            operations:
+        </p>
+        <p>The available buttons are:</p>
+        <div class="itemizedlist">
+            <ul class="itemizedlist" type="disc">
+                <li class="listitem"><p title="Run current buffer:"><b>Run current buffer: </b>
+                    It will run the current selected buffer. It will ask you if you want to
+                    save the file if the file is unsaved. The output will go to the text area
+                </p></li>
+                <li class="listitem"><p title="Run current buffer to another buffer:"><b>Run current buffer to another
+                    buffer: </b>
+                    Same as before, but the output will appear in another buffer.
+                </p></li>
+                <li class="listitem"><p title="Import current buffer"><b>Import current buffer. </b>
+                    It will import the current buffer.
+                </p></li>
+                <li class="listitem"><p title="Edit JythonPath"><b>Edit JythonPath. </b>
+                    Opens a dialog box which allows you to edit the JythonPath. You can add/remove/edit
+                    entries as well as moving them up and down
+                </p></li>
+                <li class="listitem"><p title="Browse Path"><b>Browse Path. </b>
+                    It opens the Path Browser, which allows you to easily open python files. It doesn't
+                    yet works with compressed python files
+                </p></li>
+                <li class="listitem"><p title="Save session: "><b>Save session: . </b>
+                    Exports the current interactive session to a new buffer
+                </p></li>
+                <li class="listitem"><p title="Restart and clean session: "><b>Restart and clean session: . </b>
+                    Restarts the interpreter and cleans the session
+                </p></li>
+                <li class="listitem"><p title="Check buffer with tabnanny: "><b>Check buffer with tabnanny: . </b>
+                    Checks the current buffer with tabnnany to find indentation problems
+                </p></li>
+                <li class="listitem"><p title="About: "><b>About: . </b>
+                    Opens the about dialog box
+                </p></li>
+            </ul>
+        </div>
+    </div>
+    <div class="chapter" title="Some extras">
+        <div class="titlepage">
+            <div>
+                <div><h2 class="title"><a name="extras"></a>Chapter 3. Some extras</h2></div>
+            </div>
+        </div>
+        <p>
+            The Interpreter is based on the Jython's Interactive Console, so all commands
+            available there are available here as well.
+        </p>
+        <p>
+            The current buffer object is always available as a Jython
+            object called buffer. This makes very easy to run the currently edited file
+            as execfile(buffer.getPath())
+        </p>
+        <p>
+            If the projectviewer plugin is installed, the path of the current project will
+            be added to the jython class path so that any java classes in the current project
+            can be used within the interpreter.
+        </p>
+        <p>
+            The same variables normally available at BeanShell are available in Jython, namely:
+        </p>
+        <div class="itemizedlist">
+            <ul class="itemizedlist" type="disc">
+                <li class="listitem"><p title="buffer"><b>buffer. </b></p></li>
+                <li class="listitem"><p title="editPane"><b>editPane. </b></p></li>
+                <li class="listitem"><p title="textArea"><b>textArea. </b></p></li>
+                <li class="listitem"><p title="view"><b>view. </b></p></li>
+            </ul>
+        </div>
+        <p>The interpreter is running on its own independent thread and the current task
+            will be "attempted" to be stopped by the stop button</p>
+        <p>Pressing restart will clear completly the interpreter. Notice that the
+            startup scripts will be loaded again.</p></div>
+    <div class="chapter" title="SideKick parser">
+        <div class="titlepage">
+            <div>
+                <div><h2 class="title"><a name="sidekick"></a>Chapter 4. SideKick parser</h2></div>
+            </div>
+        </div>
+        <p>The JythonInterpreter plugin includes a python parser adapted for
+            the SideKick parser. To use it just open a python file and the sidekick
+            plugin window.
+        </p>
+        <p>
+            In version 0.9.1 there were errrors in the loading part unless the
+            Autoload ALL JARs options was checked.
+        </p></div>
+    <div class="chapter" title="Options">
+        <div class="titlepage">
+            <div>
+                <div><h2 class="title"><a name="options"></a>Chapter 5. Options</h2></div>
+            </div>
+        </div>
+        <p>Several options have been added and can be Found at
+            <span class="guimenu"><strong>Utilities</strong></span>
+            <span class="guisubmenu"><strong>Global Options</strong></span>
+            <span class="guisubmenu"><strong>Plugins</strong></span>
+            <span class="guisubmenu"><strong>Jython Interpreter</strong></span>
+        </p>
+        <p>The options are:</p>
+        <div class="itemizedlist">
+            <ul class="itemizedlist" type="disc">
+                <li class="listitem"><p title="Load Interpreter at the begining:"><b>Load Interpreter at the
+                    begining: </b>
+                    If selected the interpreter will be loaded automatically at startup,
+                    instead of waiting for the first command.
+                </p></li>
+                <li class="listitem"><p title="Autoload plugins' JARS:"><b>Autoload plugins' JARS: </b>
+                    If selected the interpreter will add all the jars from plugins to the
+                    cache and system path making them avaiable for scripting.
+                </p></li>
+                <li class="listitem"><p title="Autosave before run/import"><b>Autosave before run/import. </b>
+                    If set files will be automatically saved when run or import.
+                </p></li>
+                <li class="listitem"><p title="Confirm save before run/import"><b>Confirm save before run/import. </b>
+                    If set and the autosave option is not set, it will ask if you want to save
+                    the file before run/import. Disable if you don't want to be bugged
+                </p></li>
+                <li class="listitem"><p title="Save JythonPath on modification"><b>Save JythonPath on modification. </b>
+                    If set the path will be saved locally if you modify it by the PathEditor dialog
+                    box. In this way the next time the interpreter is used it will use the complete path
+                </p></li>
+                <li class="listitem"><p title="Override default registry: "><b>Override default registry: . </b>
+                    Allows to use custom values for the Jython registry. Notice that empty values
+                    won't be set as empty. The loading of custom properties after Jython has started
+                    for the first time has no effect, so changes will be valid the next time jEdit is
+                    run. For details about registr refer to <a class="ulink"
+                                                               href="http://www.jython.org/docs/registry.html"
+                                                               target="_top">
+                        The Jython Registry</a>
+                </p></li>
+            </ul>
+        </div>
+    </div>
+    <div class="chapter" title="Macros">
+        <div class="titlepage">
+            <div>
+                <div><h2 class="title"><a name="macros"></a>Chapter 6. Macros</h2></div>
+            </div>
+        </div>
+        <p>
+            Since version 0.8 JythohInterpreter uses the MacroHandler mechanism avaiable as jEdit 4.0pre6 and avobe.
+            This means that jython macros can be executed and treated exactly like BeanShell macros.
+            Macros have access to the 4 standard variables view, buffer, textArea and editPane
+        </p>
+        <p>
+            To make a macro just create a python file (Don't forget the py extension) and put it in a macros dir
+        </p>
+        <p>
+            Aditionally you can script all other plugins. To do that enable loading the plugins jar option. That will
+            cause the interpreter to include all jars in your .jedit/jars dir and you can use that to do
+            plugins scripting.
+        </p>
+        <p>
+            Finally the utils module has a new BufferList class. This class is a wrapper around
+            a buffer but which acts as a jython list, where every element on the list is a buffer line.
+            For instance a code like this would print the whole Buffer to the console.
+        </p>
+        <pre class="programlisting">
+def f():
+	from utils import BufferList
+
+	b = BufferList(buffer)
+	for l in b:
+		print l
+
+f()
+			</pre>
+        <p>
+            Run it directly in the interpreter window it would print itself.
+        </p>
+        <p>
+            You can use all the range of list standard functions like BufferList(buffer)[0:2:] to get
+            all buffer's even lines and so on.
+        </p></div>
+    <div class="chapter" title="Plugins">
+        <div class="titlepage">
+            <div>
+                <div><h2 class="title"><a name="plugins"></a>Chapter 7. Plugins</h2></div>
+            </div>
+        </div>
+        <p>Jython Plugins can be built by creating a normal plugin and adding
+            <span class="guimenu"><strong>.py</strong></span> files to the plugin's jar. Of course you also need to add
+            the dependency on JythonInterpreter 0.9.8 or higher.
+            When your plugin needs to execute something you call the JythonExecutor.executePlugin(pluginName, dir,
+            module, function)
+            or JythonExecutor.executePlugin(pluginName, dir, module, function, args)
+        </p>
+        <p>Where:
+        </p>
+        <div class="itemizedlist">
+            <ul class="itemizedlist" type="disc">
+                <li class="listitem"><p>pluginName: is the name of the plugin class like jython.JythonPlugin</p></li>
+                <li class="listitem"><p>dir: is the subdir in the jar where the module.py file is</p></li>
+                <li class="listitem"><p>module: module to be imported</p></li>
+                <li class="listitem"><p>function: Function to be called</p></li>
+                <li class="listitem"><p>args: Optional args as an Object[ ]</p></li>
+            </ul>
+        </div>
+        <p>
+        </p>
+        <p>As an example the Plugin itself intializes with a call
+            execPlugin("jython.JythonPlugin", "jython", "init", "_start");
+        </p></div>
+    <div class="chapter" title="Credits">
+        <div class="titlepage">
+            <div>
+                <div><h2 class="title"><a name="credits"></a>Chapter 8. Credits</h2></div>
+            </div>
+        </div>
+        <div class="itemizedlist">
+            <ul class="itemizedlist" type="disc">
+                <li class="listitem"><p>Mike Dillon: Contribution of MacroHandler
+                    API adaptor for JythonInterpreter</p></li>
+                <li class="listitem"><p>Oliver Rutherfurd: Contribution of init.py,
+                    Python parser for SideKick, bugfixes, and
+                    many suggestions</p></li>
+                <li class="listitem"><p>Jason Madar: Projectviewer integration and
+                    some bugfixes</p></li>
+            </ul>
+        </div>
+    </div>
+    <div class="appendix" title="ToDo">
+        <div class="titlepage">
+            <div>
+                <div><h2 class="title"><a name="todo"></a>Appendix A. ToDo</h2></div>
+            </div>
+        </div>
+        <div class="itemizedlist">
+            <ul class="itemizedlist" type="disc">
+                <li class="listitem"><p>
+                    Add syntax coloring to the interpreter
+                </p></li>
+                <li class="listitem"><p>
+                    Add auto tabbing
+                </p></li>
+                <li class="listitem"><p>
+                    Improve path browser
+                </p></li>
+                <li class="listitem"><p>
+                    Option to profile programs
+                </p></li>
+                <li class="listitem"><p>
+                    Debugger
+                </p></li>
+            </ul>
+        </div>
+    </div>
+    <div class="appendix" title="Change log">
+        <div class="titlepage">
+            <div>
+                <div><h2 class="title"><a name="changes"></a>Appendix B. Change log</h2></div>
+            </div>
+        </div>
+        <div class="itemizedlist">
+            <ul class="itemizedlist" type="disc">
+				<li class="listitem"><p><span class="bold"><strong>Version 1.1</strong></span>
+					requires jEdit 5.5.0, Java 1.8, SideKick 1.8, ErrorList 2.3, ProjectViewer 3.6. </p>
+					<div class="itemizedlist">
+						<ul class="itemizedlist" type="circle">
+							<li class="listitem"><p>
+								Updated to use/include Jython 2.7.3b2 and Java 1.8 (Robert Carnecky)
+							</p></li>
+						</ul>
+					</div>
+				</li>
+				<li class="listitem"><p><span class="bold"><strong>Version 1.0</strong></span>
+					requires jEdit 4.4, Java 1.6, SideKick 1.2, ErrorList 1.9, ProjectViewer 3.4.2. </p>
+					<div class="itemizedlist">
+						<ul class="itemizedlist" type="circle">
+							<li class="listitem"><p>
+								Updated to use/include Jython 2.5.3b1 (Roland Walter)
+							</p></li>
+						</ul>
+					</div>
+				</li>
+                <li class="listitem"><p><span class="bold"><strong>Version 0.9.6</strong></span>
+                    requires jEdit 4.2pre11, SideKick 0.3, ErrorList 1.3.2</p>
+                    <div class="itemizedlist">
+                        <ul class="itemizedlist" type="circle">
+                            <li class="listitem"><p>Includes an updated version of Jython 2.1
+                                that works on JDK 1.5.</p></li>
+                            <li class="listitem"><p>Added optional dependency on ProjectViewer.</p></li>
+                            <li class="listitem"><p><code class="literal">buffer</code>, <code
+                                    class="literal">editPane</code>,
+                                <code class="literal">textArea</code>, and <code class="literal">view</code>
+                                are now locals in macros.</p></li>
+                            <li class="listitem"><p><code class="literal">__name__</code> is set to
+                                <code class="literal">"__main__"</code> for macros.</p></li>
+                        </ul>
+                    </div>
+                </li>
+                <li class="listitem"><p><span class="bold"><strong>Version 0.9.5</strong></span>
+                    requires jEdit 4.2pre, SideKick 0.1, ErrorList 1.3.1</p>
+                    <div class="itemizedlist">
+                        <ul class="itemizedlist" type="circle">
+                            <li class="listitem"><p>Converted option panes to Java.</p></li>
+                            <li class="listitem"><p>Fixed bugs in executing python startup scripts.</p></li>
+                            <li class="listitem"><p>"jython" directory no longer created or used in jEdit
+                                home directory. Use a startup script instead if you
+                                wish to have a script executed when jEdit is starting.</p></li>
+                            <li class="listitem"><p>Traceback displayed when there's an error
+                                executing a macro.</p></li>
+                            <li class="listitem"><p>Removed old macro execution method: "_execMacro".</p></li>
+                            <li class="listitem"><p>Removed support for executing user's
+                                "jython\jedit.py" on startup.</p></li>
+                            <li class="listitem"><p>Added AWT error handler to catch jython exception using AWT.</p>
+                            </li>
+                            <li class="listitem"><p>Fixed bugs in path handler. Now it can also load one path and
+                                mutiple jars at the same time. It uses jEdit VFS.</p></li>
+                            <li class="listitem"><p>Added button to invoke tabnanny </p></li>
+                            <li class="listitem"><p>If project list is installed its classpath is added to the
+                                interpreter</p></li>
+                            <li class="listitem"><p>Compatible with jEdit 4.2pre7</p></li>
+                        </ul>
+                    </div>
+                </li>
+                <li class="listitem"><p><span class="bold"><strong>Version 0.9.2</strong></span>
+                    requires jEdit 4.0pre6, SideKick 0.1</p>
+                    <div class="itemizedlist">
+                        <ul class="itemizedlist" type="circle">
+                            <li class="listitem"><p>Fixed bug where PythonParser wouldn't work
+                                if "Autoload Plugin JARS" wasn't set to `true`
+                                (default setting is false). Now SideKick.jar is
+                                always imported.</p></li>
+                        </ul>
+                    </div>
+                </li>
+                <li class="listitem"><p>
+                    <span class="bold"><strong>Version 0.9.1</strong></span>
+                    requires jEdit 4.0pre6, SideKick 0.1</p>
+                    <div class="itemizedlist">
+                        <ul class="itemizedlist" type="circle">
+                            <li class="listitem"><p>Integrated Python parser for SideKick plugin.</p></li>
+                            <li class="listitem"><p>Fixed label properties used for option panes.</p></li>
+                        </ul>
+                    </div>
+                </li>
+                <li class="listitem"><p>
+                    <span class="bold"><strong>Version 0.9</strong></span>
+                    requires jEdit 4.0.6</p>
+                    <div class="itemizedlist">
+                        <ul class="itemizedlist" type="circle">
+                            <li class="listitem"><p>Fixed bugs #606782, #536885, #524056</p></li>
+                            <li class="listitem"><p>Added option to uset UP/DOWN for history navigation</p></li>
+                            <li class="listitem"><p>Added option to reuse the export to file</p></li>
+                            <li class="listitem"><p>Added option for the export to file to remember the original source
+                                file. When export to is pressed it will use again the original source file</p></li>
+                            <li class="listitem"><p>Removed all old Console dependencies</p></li>
+                            <li class="listitem"><p>Added option pane to define colors and font</p></li>
+                        </ul>
+                    </div>
+                </li>
+                <li class="listitem"><p>
+                    <span class="bold"><strong>Version 0.8</strong></span>
+                    requires jEdit 4.0.6</p>
+                    <div class="itemizedlist">
+                        <ul class="itemizedlist" type="circle">
+                            <li class="listitem"><p>Updated to jEdit 4.0.6 and uses the new Macro Handler API (Mike
+                                Dillon)</p></li>
+                            <li class="listitem"><p>Removed custom namespace to ensure macro compability</p></li>
+                            <li class="listitem"><p>Added option to autoload all plugins' jars</p></li>
+                            <li class="listitem"><p>Added export session</p></li>
+                            <li class="listitem"><p>Removed deprecated functions</p></li>
+                        </ul>
+                    </div>
+                </li>
+                <li class="listitem"><p>
+                    <span class="bold"><strong>Version 0.7</strong></span>
+                    requires jEdit 3.2.2, the EditBus plugin 1.0.1.</p>
+                    <div class="itemizedlist">
+                        <ul class="itemizedlist" type="circle">
+                            <li class="listitem"><p>Updated to jEdit 4.0.4 using new Dockables APi</p></li>
+                            <li class="listitem"><p>Added jython.JythonDocker class to adapt to the new Dockables
+                                API</p></li>
+                            <li class="listitem"><p>Improved caching of jars</p></li>
+                        </ul>
+                    </div>
+                </li>
+                <li class="listitem"><p><span class="bold"><strong>Version 0.6.3</strong></span> requires
+                    jEdit 3.2.2, the EditBus plugin 1.0.1.</p>
+                    <div class="itemizedlist">
+                        <ul class="itemizedlist" type="circle">
+                            <li class="listitem"><p>
+                                Updated to jython 2.1.
+                            </p></li>
+                            <li class="listitem"><p>
+                                Last version for jEdit 3.xx
+                            </p></li>
+                        </ul>
+                    </div>
+                </li>
+                <li class="listitem"><p><span class="bold"><strong>Version 0.6</strong></span> requires
+                    jEdit 3.2.2, the EditBus plugin 1.0.1.</p>
+                    <div class="itemizedlist">
+                        <ul class="itemizedlist" type="circle">
+                            <li class="listitem"><p>
+                                Completely redesigned GUI, with a toolbar and a text area, direclty editable.
+                            </p></li>
+                            <li class="listitem"><p>
+                                New implementation mostly in Jython
+                            </p></li>
+                            <li class="listitem"><p>
+                                New run current buffer button
+                            </p></li>
+                            <li class="listitem"><p>
+                                New run current buffer to another buffer button
+                            </p></li>
+                            <li class="listitem"><p>
+                                New import current buffer button
+                            </p></li>
+                            <li class="listitem"><p>
+                                New JythonPath editor
+                            </p></li>
+                            <li class="listitem"><p>
+                                New PathBrowser
+                            </p></li>
+                            <li class="listitem"><p>
+                                Improved error handling, including an Error button which allows to jump to the
+                                error source
+                            </p></li>
+                            <li class="listitem"><p>
+                                Check jython version, which verify if the right version is in use
+                            </p></li>
+                            <li class="listitem"><p>
+                                History moved to CTRL+UP and CTRL+DOWN keys
+                            </p></li>
+                            <li class="listitem"><p>
+                                Documentation moved to DockBook
+                            </p></li>
+                        </ul>
+                    </div>
+                </li>
+                <li class="listitem"><p><span class="bold"><strong>Version 0.5</strong></span> requires
+                    jEdit 3.1final, the EditBus plugin 1.0.1.</p>
+                    <div class="itemizedlist">
+                        <ul class="itemizedlist" type="circle">
+                            <li class="listitem"><p>
+                                Improved init.py.
+                            </p></li>
+                            <li class="listitem"><p>
+                                Added output.
+                            </p></li>
+                            <li class="listitem"><p>
+                                Completly rebuilt execPlugin mehtod, using jython 2.1a3 features. Old
+                                method is deprecated.
+                            </p></li>
+                            <li class="listitem"><p>
+                                Fixed wrong location of the help file.
+                            </p></li>
+                            <li class="listitem"><p>
+                                Removed Console dependency.
+                            </p></li>
+                            <li class="listitem"><p>
+                                Added jython 2.1a3 bundle if you don't have jython already.
+                            </p></li>
+                        </ul>
+                    </div>
+                </li>
+                <li class="listitem"><p><span class="bold"><strong>Version 0.4</strong></span> requires
+                    Requires jEdit 3.1final, EditBus 1.0, and Console 2.6.</p>
+                    <div class="itemizedlist">
+                        <ul class="itemizedlist" type="circle">
+                            <li class="listitem"><p>
+                                Improved init.py
+                            </p></li>
+                            <li class="listitem"><p>
+                                Added execPlugin mehtod
+                            </p></li>
+                            <li class="listitem"><p>
+                                Removed jython distribution for size issues
+                            </p></li>
+                        </ul>
+                    </div>
+                </li>
+                <li class="listitem"><p><span class="bold"><strong>Version 0.3</strong></span> requires
+                    Requires jEdit 3.1final, EditBus 1.0, and Console 2.6.</p>
+                    <div class="itemizedlist">
+                        <ul class="itemizedlist" type="circle">
+                            <li class="listitem"><p>
+                                Added option to customize the jython registry
+                            </p></li>
+                            <li class="listitem"><p>
+                                Added static method to execute macros
+                            </p></li>
+                            <li class="listitem"><p>
+                                Added init method
+                            </p></li>
+                            <li class="listitem"><p>
+                                Integrated jython distribution
+                            </p></li>
+                        </ul>
+                    </div>
+                </li>
+                <li class="listitem"><p><span class="bold"><strong>Version 0.2</strong></span> requires
+                    Requires jEdit 3.1final, EditBus 1.0, and Console 2.6.</p>
+                    <div class="itemizedlist">
+                        <ul class="itemizedlist" type="circle">
+                            <li class="listitem"><p>
+                                Detects if jython is not available and displays a nicer message
+                            </p></li>
+                            <li class="listitem"><p>
+                                Interpreter runs in its own thread
+                            </p></li>
+                            <li class="listitem"><p>
+                                Stop enabled
+                            </p></li>
+                            <li class="listitem"><p>
+                                Added restart
+                            </p></li>
+                            <li class="listitem"><p>
+                                The namespace for shell variables can be customized
+                            </p></li>
+                            <li class="listitem"><p>
+                                Added options pane
+                            </p></li>
+                        </ul>
+                    </div>
+                </li>
+                <li class="listitem"><p><span class="bold"><strong>Version 0.1</strong></span> requires
+                    Requires jEdit 3.1final, EditBus 1.0, and Console 2.6.</p>
+                    <div class="itemizedlist">
+                        <ul class="itemizedlist" type="circle">
+                            <li class="listitem"><p>
+                                Initial release
+                            </p></li>
+                            <li class="listitem"><p>
+                                Uses a modified Console.jar included in the distribution jar
+                            </p></li>
+                        </ul>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+</body>
+</html>

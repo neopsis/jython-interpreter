@@ -1,0 +1,54 @@
+
+plugins {
+    id 'java'
+    id 'idea'
+    id 'maven'
+    id 'com.github.johnrengelman.shadow' version '5.2.0'
+}
+
+group 'com.neopsis'
+version '1.1'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+apply plugin: 'java'
+apply plugin: 'idea'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compileOnly fileTree(dir: '/Users/Robert/Library/jEdit/jars', include: '*.jar')
+    compileOnly fileTree(dir: '/Applications/jEdit.app/Contents/Java/jars', include: '*.jar')
+    compileOnly files('/Applications/jEdit.app/Contents/Java/jedit.jar')
+
+}
+
+// *******************************************************
+//      Shadow JAR makes a new fatjar
+// *******************************************************
+shadowJar {
+
+    mergeServiceFiles()
+    // classifier = null
+
+    configurations = [project.configurations.compile]
+
+    from('src/main/java') {
+        include '**/*.py'
+    }
+
+    doLast {
+        copy {
+            from(project.buildDir.toString() + '/libs')
+            include(baseName + '-' + version + '-all.jar')
+            rename(baseName + '-' + version + '-all.jar', 'JythonInterpreter.jar')
+            into {
+                file('/Applications/jEdit.app/Contents/Java/jars')
+            }
+        }
+    }
+}
+
